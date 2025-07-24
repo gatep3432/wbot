@@ -62,11 +62,10 @@ IST = pytz.timezone('Asia/Kolkata')
 
 # Schedule the message at 12:50 PM IST every day
 scheduler.add_job(
-    id='whatsapp_hi_bro',
+    id='whatsapp_hi_bro_recurring',
     func=scheduled_whatsapp_message,
-    trigger='cron',
-    hour=13,
-    minute=12,
+    trigger='interval',         # <-- THIS IS THE KEY
+    minutes=1,                 # Send every 15 minutes
     timezone=IST
 )
 
