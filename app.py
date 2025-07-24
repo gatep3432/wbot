@@ -42,7 +42,7 @@ def get_ai_reply(user_input):
     }
 
     payload = {
-    "model": "deepseek/deepseek-r1-distill-llama-70b:free",  # Upgraded to 70B!
+    "model": "pygmalionai/mythalion-13b",  # Upgraded to 70B!
     "messages": [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_input}
