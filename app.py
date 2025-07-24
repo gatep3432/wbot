@@ -77,14 +77,17 @@ def get_ai_reply(user_input):
         return "🔧 Something went wrong processing your request. Please try again."
 
 @app.route("/whatsapp", methods=["GET", "POST"])
+@app.route("/whatsapp", methods=["GET", "POST"])
 def handle_whatsapp_message():
-    """Handle incoming WhatsApp messages"""
+    if request.method == "GET":
+        return "✅ WhatsApp bot is alive and waiting for messages.", 200
+
+    # POST logic stays the same:
     incoming_msg = request.form.get("Body", "").strip()
     sender = request.form.get("From")
     
     print(f"📥 Message from {sender}: {incoming_msg}")
     
-    # Create Twilio response
     resp = MessagingResponse()
     msg = resp.message()
     
