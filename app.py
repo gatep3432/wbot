@@ -66,7 +66,7 @@ scheduler.add_job(
     func=scheduled_whatsapp_message,
     trigger='cron',
     hour=12,
-    minute=47,
+    minute=49,
     timezone=IST
 )
 
