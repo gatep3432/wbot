@@ -101,7 +101,9 @@ def handle_whatsapp_message():
 def health_check():
     """Simple health check endpoint"""
     return {"status": "healthy", "service": "WhatsApp AI Bot"}, 200
-
+@app.route('/')
+def home():
+    return 'Bot is running 👋'
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(debug=True, host="0.0.0.0", port=5000)
