@@ -45,7 +45,7 @@ def scheduled_whatsapp_message():
     auth_token = TWILIO_AUTH_TOKEN
     client = Client(account_sid, auth_token)
     from_whatsapp_number = 'whatsapp:+14155238886'  # Your Twilio WhatsApp number here (use sandbox number if testing)
-    to_whatsapp_number = 'whatsapp:+919999999999'   # The recipient's number here, E.164 format
+    to_whatsapp_number = 'whatsapp:+918707723879'   # The recipient's number here, E.164 format
 
     try:
         message = client.messages.create(
@@ -65,8 +65,8 @@ scheduler.add_job(
     id='whatsapp_hi_bro',
     func=scheduled_whatsapp_message,
     trigger='cron',
-    hour=12,
-    minute=58,
+    hour=13,
+    minute=04,
     timezone=IST
 )
 
