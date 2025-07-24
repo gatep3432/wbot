@@ -76,7 +76,7 @@ def get_ai_reply(user_input):
         print(f"❌ Unexpected API response format: {e}")
         return "🔧 Something went wrong processing your request. Please try again."
 
-@app.route("/whatsapp", methods=["POST"])
+@app.route("/whatsapp", methods=["GET", "POST"])
 def handle_whatsapp_message():
     """Handle incoming WhatsApp messages"""
     incoming_msg = request.form.get("Body", "").strip()
