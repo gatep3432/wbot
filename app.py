@@ -1,3 +1,10 @@
+"""
+Purpose:
+This Flask app integrates Twilio's WhatsApp API with OpenAI's GPT-5 model.
+It receives WhatsApp messages, processes them through GPT-5, and sends replies.
+Also supports scheduled WhatsApp messages using APScheduler.
+"""
+
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
@@ -44,6 +51,7 @@ scheduler.start()
 IST = pytz.timezone('Asia/Kolkata')
 
 def scheduled_whatsapp_message():
+    """Example scheduled message sender"""
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     from_whatsapp_number = 'whatsapp:+14155238886'  # Twilio sandbox number
     to_whatsapp_number = 'whatsapp:+918707723879'   # Your number
@@ -58,32 +66,24 @@ def scheduled_whatsapp_message():
     except Exception as e:
         print(f"❌ Failed to send scheduled message: {e}")
 
-# Example scheduled job (disabled by default)
-# scheduler.add_job(
-#     id='whatsapp_hi_bro_recurring',
-#     func=scheduled_whatsapp_message,
-#     trigger='interval',
-#     minutes=1,
-#     timezone=IST
-# )
-
-# System prompt (one line to avoid whitespace issues)
+# System prompt
 system_prompt = "You are an AI Assistant that provides helpful, friendly, and concise responses. Keep your answers conversational and engaging while being informative."
 
 def get_ai_reply(user_input):
-    """Get AI response from OpenAI API"""
+    """Get AI response from OpenAI API using GPT-5"""
     headers = {
         "Authorization": f"Bearer {OPENAI_API_KEY}",
         "Content-Type": "application/json"
     }
 
+    # GPT-5 models require 'max_completion_tokens' instead of 'max_tokens'
     payload = {
-        "model": "gpt-5-nano",
+        "model": "gpt-5",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
         ],
-        "max_tokens": 5000,
+        "max_completion_tokens": 500,  # ✅ fixed parameter
         "temperature": 0.7
     }
 
@@ -144,6 +144,4 @@ def home():
 
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
-    app.run(host="0.0.0.0", port=5000)  # Removed debug=True for webhook safety
-
-
+    app.run(host="0.0.0.0", port=5000)
