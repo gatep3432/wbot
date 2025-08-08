@@ -78,7 +78,7 @@ def get_ai_reply(user_input):
     }
 
     payload = {
-        "model": "gpt-4o-mini",
+        "model": "gpt-5-nano",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
@@ -145,4 +145,5 @@ def home():
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(host="0.0.0.0", port=5000)  # Removed debug=True for webhook safety
+
 
