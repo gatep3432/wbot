@@ -10,12 +10,12 @@ import pytz
 # Load environment variables
 load_dotenv()
 
-# Get all credentials from environment
+# Get credentials
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
-# Validate required environment variables
+# Validate environment variables
 required_vars = {
     "OPENAI_API_KEY": OPENAI_API_KEY,
     "TWILIO_ACCOUNT_SID": TWILIO_ACCOUNT_SID,
@@ -40,16 +40,17 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
+# Timezone
+IST = pytz.timezone('Asia/Kolkata')
+
 def scheduled_whatsapp_message():
-    account_sid = TWILIO_ACCOUNT_SID
-    auth_token = TWILIO_AUTH_TOKEN
-    client = Client(account_sid, auth_token)
-    from_whatsapp_number = 'whatsapp:+14155238886'  # Your Twilio WhatsApp number here (use sandbox number if testing)
-    to_whatsapp_number = 'whatsapp:+918707723879'   # The recipient's number here, E.164 format
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    from_whatsapp_number = 'whatsapp:+14155238886'  # Twilio sandbox number
+    to_whatsapp_number = 'whatsapp:+918707723879'   # Your number
 
     try:
-        message = client.messages.create(
-            body="Hi bro",
+        client.messages.create(
+            body="Hi bro 👋",
             from_=from_whatsapp_number,
             to=to_whatsapp_number
         )
@@ -57,28 +58,22 @@ def scheduled_whatsapp_message():
     except Exception as e:
         print(f"❌ Failed to send scheduled message: {e}")
 
-# Set timezone for IST
-IST = pytz.timezone('Asia/Kolkata')
+# Example scheduled job (disabled by default)
+# scheduler.add_job(
+#     id='whatsapp_hi_bro_recurring',
+#     func=scheduled_whatsapp_message,
+#     trigger='interval',
+#     minutes=1,
+#     timezone=IST
+# )
 
-# Schedule the message at 12:50 PM IST every day
-#scheduler.add_job(
- #   id='whatsapp_hi_bro_recurring',
- #   func=scheduled_whatsapp_message,
- #   trigger='interval',         # <-- THIS IS THE KEY
-#    minutes=1,                 # Send every 15 minutes
-#    timezone=IST
-#)
-
-# Enhanced system prompt
-system_prompt = """
-You are an AI Assistant that provides helpful, friendly, and concise responses.
-Keep your answers conversational and engaging while being informative.
-"""
+# System prompt (one line to avoid whitespace issues)
+system_prompt = "You are an AI Assistant that provides helpful, friendly, and concise responses. Keep your answers conversational and engaging while being informative."
 
 def get_ai_reply(user_input):
-    """Get AI response from OPENAI API"""
+    """Get AI response from OpenAI API"""
     headers = {
-        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
         "Content-Type": "application/json"
     }
 
@@ -101,7 +96,7 @@ def get_ai_reply(user_input):
             timeout=30
         )
 
-        print(f"✅ OPENAI Status: {response.status_code}")
+        print(f"✅ OpenAI Status: {response.status_code}")
         response.raise_for_status()
 
         ai_response = response.json()['choices'][0]['message']['content'].strip()
@@ -110,7 +105,8 @@ def get_ai_reply(user_input):
     except requests.exceptions.Timeout:
         return "⏱️ Sorry, I'm thinking too hard right now. Try again in a moment!"
     except requests.exceptions.RequestException as e:
-        print(f"❌ OPENAI API Error: {e}")
+        print(f"❌ OpenAI API Error: {e}")
+        print("🔍 Full API Response:", response.text if 'response' in locals() else "No response")
         return "🤖 I'm having some technical difficulties. Please try again later."
     except KeyError as e:
         print(f"❌ Unexpected API response format: {e}")
@@ -121,7 +117,6 @@ def handle_whatsapp_message():
     if request.method == "GET":
         return "✅ WhatsApp bot is alive and waiting for messages.", 200
 
-    # POST logic stays the same:
     incoming_msg = request.form.get("Body", "").strip()
     sender = request.form.get("From")
     
@@ -149,6 +144,4 @@ def home():
 
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
-    app.run(debug=True, host="0.0.0.0", port=5000)
-
-
+    app.run(host="0.0.0.0", port=5000)  # Removed debug=True for webhook safety
