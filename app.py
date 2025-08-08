@@ -76,14 +76,14 @@ Keep your answers conversational and engaging while being informative.
 """
 
 def get_ai_reply(user_input):
-    """Get AI response from OpenRouter API"""
+    """Get AI response from OPENAI API"""
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json"
     }
 
     payload = {
-        "model": "pygmalionai/mythalion-13b",
+        "model": "gpt-5",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
@@ -95,7 +95,7 @@ def get_ai_reply(user_input):
     try:
         print(f"📤 Processing message: {user_input[:50]}...")
         response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
+            "https://api.openai.com/v1/chat/completions",
             headers=headers,
             json=payload,
             timeout=30
@@ -150,3 +150,4 @@ def home():
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(debug=True, host="0.0.0.0", port=5000)
+
