@@ -83,8 +83,7 @@ def get_ai_reply(user_input):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
         ],
-        "max_completion_tokens": 500,  # ✅ fixed parameter
-        "temperature": 0.7
+        "max_completion_tokens": 500  # ✅ fixed param, no temperature for GPT-5
     }
 
     try:
@@ -145,3 +144,4 @@ def home():
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(host="0.0.0.0", port=5000)
+
