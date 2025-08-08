@@ -11,13 +11,13 @@ import pytz
 load_dotenv()
 
 # Get all credentials from environment
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 
 # Validate required environment variables
 required_vars = {
-    "OPENROUTER_API_KEY": OPENROUTER_API_KEY,
+    "OPENAI_API_KEY": OPENAI_API_KEY,
     "TWILIO_ACCOUNT_SID": TWILIO_ACCOUNT_SID,
     "TWILIO_AUTH_TOKEN": TWILIO_AUTH_TOKEN
 }
@@ -78,12 +78,12 @@ Keep your answers conversational and engaging while being informative.
 def get_ai_reply(user_input):
     """Get AI response from OPENAI API"""
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
         "Content-Type": "application/json"
     }
 
     payload = {
-        "model": "gpt-5",
+        "model": "gpt-4o-mini",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
@@ -101,7 +101,7 @@ def get_ai_reply(user_input):
             timeout=30
         )
 
-        print(f"✅ OpenRouter Status: {response.status_code}")
+        print(f"✅ OPENAI Status: {response.status_code}")
         response.raise_for_status()
 
         ai_response = response.json()['choices'][0]['message']['content'].strip()
@@ -110,7 +110,7 @@ def get_ai_reply(user_input):
     except requests.exceptions.Timeout:
         return "⏱️ Sorry, I'm thinking too hard right now. Try again in a moment!"
     except requests.exceptions.RequestException as e:
-        print(f"❌ OpenRouter API Error: {e}")
+        print(f"❌ OPENAI API Error: {e}")
         return "🤖 I'm having some technical difficulties. Please try again later."
     except KeyError as e:
         print(f"❌ Unexpected API response format: {e}")
@@ -150,4 +150,5 @@ def home():
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(debug=True, host="0.0.0.0", port=5000)
+
 
