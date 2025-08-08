@@ -83,7 +83,7 @@ def get_ai_reply(user_input):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_input}
         ],
-        "max_tokens": 500,
+        "max_tokens": 5000,
         "temperature": 0.7
     }
 
@@ -145,3 +145,4 @@ def home():
 if __name__ == "__main__":
     print("🚀 Starting WhatsApp AI Bot...")
     app.run(host="0.0.0.0", port=5000)  # Removed debug=True for webhook safety
+
